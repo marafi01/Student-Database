@@ -1,0 +1,125 @@
+-- create the database
+DROP DATABASE IF EXISTS marafi_project;
+CREATE DATABASE mrafi_project;
+-- select the database
+USE mrafi_project;
+-- create the tables
+CREATE TABLE STUDENT 
+(
+ StudentID INT NOT NULL UNIQUE,
+ StudentName VARCHAR(30) NOT NULL,
+ Address VARCHAR(30) NOT NULL,
+ Zip_code VARCHAR(10) NOT NULL,
+ City VARCHAR(30) NOT NULL,
+ State CHAR(2) NOT NULL,
+ Gender VARCHAR(2) NOT NULL,
+ PRIMARY KEY (StudentID)
+);
+INSERT INTO STUDENT VALUES
+(148, 'Susan Powell', '534 East River Drive', '19041', 'Haverford', 'PA', 'F'),
+(210, 'Bob Dawson', '120 South Jefferson', '02891', 'Newport', 'RI', 'M'), 
+(298, 'Howard Mansfield', '290 Wynkoop Drive', '22180', 'Vienna', 'VA', 'M'),
+(348, 'Susan Pugh', '534 East Hampton Dr.', '06107', 'Hartford', 'CN', 'F'), 
+(349, 'Joe Adams', '437 Emerson Street', '19702', 'Newark', 'DE', 'M'),
+(354, 'Janet Ladd', '441 10th Street', '18073', 'Pennsburg', 'PA', 'F'),
+(410, 'Bill Jones', '120 South Harrison', '92660', 'Newport', 'CA', 'M'),
+(473, 'Carol Dean', '983 Park Avenue', '02169', 'Boston', 'MA', 'F'),
+(548, 'Allen Thomas', '238 West Ox Road', '60624', 'Chicago', 'IL', 'M'),
+(558, 'Val Shipp', '238 Westport Road', '60556', 'Chicago', 'IL', 'F'),
+(649, 'John Anderson', '473 Emmory Street', '10008', 'New York', 'NY', 'M'),
+(654, 'Janet Thomas', '441 6th Street', '16510', 'Erie', 'PA', 'F')
+;
+ 
+CREATE TABLE COURSE 
+(
+ CourseNum INT NOT NULL,
+ SectionNum INT NOT NULL,
+ Course_Name VARCHAR(25) NOT NULL,
+ Department VARCHAR(25) NOT NULL,
+ Credits INT NOT NULL DEFAULT 0,
+ PRIMARY KEY (CourseNum, SectionNum)
+);
+INSERT INTO COURSE VALUES
+(290, 1, 'English Composition', 'English', 3),
+(450, 1, 'Western Civilization', 'History', 3),
+(450, 2, 'Western Civilization', 'History', 3),
+(480, 1, 'COBOL', 'Computer Science', 3),
+(480, 2, 'COBOL', 'Computer Science',3),
+(730, 1, 'Calculus IV', 'Math', 4)
+;
+CREATE TABLE INSTRUCTOR 
+(
+InstructorID INT NOT NULL UNIQUE,
+InstName VARCHAR(25) NOT NULL,
+OfficeNum INT NOT NULL,
+PhoneNum VARCHAR(14) NOT NULL,
+ PRIMARY KEY (InstructorID)
+);
+INSERT INTO INSTRUCTOR VALUES
+(180, 'Dr. Cooke', 11, '257-8088'),
+(290, 'Dr. Lowe', 17, '257-2390'),
+(303, 'Dr. Horn', 21, '257-3049'),
+(430, 'Dr. Engle', 20, '257-4621'),
+(560, 'Dr. Olsen', 22, '257-8086'),
+(784, 'Dr. Scango', 11, '257-3046')
+;
+CREATE TABLE SECTION 
+(
+ SectionNum INT NOT NULL,
+ CourseNum INT NOT NULL,
+ InstructorID INT NOT NULL,
+ Num_Students INT NOT NULL DEFAULT 0,
+ PRIMARY KEY (SectionNum, CourseNum),
+ CONSTRAINT Section_FK_CourseNum
+ FOREIGN KEY (CourseNum)
+ REFERENCES COURSE (CourseNum),
+ CONSTRAINT Section_FK_InstructorID
+ FOREIGN KEY (InstructorID)
+ REFERENCES INSTRUCTOR (InstructorID) 
+);
+INSERT INTO SECTION VALUES
+(1, 290, 430, 3),
+(1, 450, 303, 2), 
+(1, 480, 180, 3),
+(1, 730, 290, 6), 
+(2, 450, 560, 2),
+(2, 480, 784, 2)
+;
+CREATE TABLE ENROLLMENT 
+(
+ CourseNum INT NOT NULL,
+ SectionNum INT NOT NULL,
+ StudentID INT NOT NULL,
+ Grade VARCHAR(3) NULL,
+ PRIMARY KEY (CourseNum, SectionNum, StudentID),
+ CONSTRAINT ENROLLMENT_FK_CourseNum
+ FOREIGN KEY (CourseNum)
+ REFERENCES COURSE (CourseNum),
+ CONSTRAINT ENROLLMENT_FK_SectionNum
+ FOREIGN KEY (SectionNum)
+ REFERENCES SECTION (SectionNum),
+ CONSTRAINT ENROLLMENT_FK_StudentID
+ FOREIGN KEY (StudentID)
+ REFERENCES STUDENT (STUDENTID)
+);
+INSERT INTO ENROLLMENT VALUES
+(290, 1, 298, NULL),
+(290, 1, 349, NULL),
+(290, 1, 548, NULL),
+(450, 1, 473, NULL),
+(450, 1, 654, NULL),
+(450, 2, 210, NULL),
+(450, 2, 548, NULL),
+(480, 1, 354, NULL),
+(480, 1, 410, NULL),
+(480, 2, 649, NULL),
+(480, 2, 298, NULL),
+(480, 2, 473, NULL),
+(730, 1, 148, NULL),
+(730, 1, 210, NULL),
+(730, 1, 348, NULL),
+(730, 1, 473, NULL),
+(730, 1, 558, NULL),
+(730, 1, 649, NULL)
+;
+
